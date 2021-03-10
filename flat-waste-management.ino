@@ -29,6 +29,8 @@ void setup() {
   
   // Set number of rows and columns in LCD.
   lcd.begin(16, 2);
+  lcd.setCursor(0, 0);
+  lcd.print("Hello");
   delay(1000);
 
   // Set the inital value of countdown.
@@ -63,9 +65,10 @@ void loop() {
       digitalWrite(YELLOW_LED, LOW);
       digitalWrite(GREEN_LED, LOW);
 
-      lcd.setCursor(0, 1);
+      lcd.setCursor(0, 0);
+      lcd.clear();
       lcd.print("It is " + bin_takers[index] + "'s");
-      lcd.setCursor(0, 2);
+      lcd.setCursor(0, 1);
       lcd.print("turn to take bin");
        
     } else if (!halfway && seconds <= total_seconds / 2) {
@@ -84,6 +87,7 @@ void loop() {
     
     // If the timer has finished, check for button press to reset.
     if (digitalRead(BUTTON_PIN) == LOW) {
+      index ++;
       seconds = total_seconds - seconds_over;
       seconds_over = 0;
       finished = false;
