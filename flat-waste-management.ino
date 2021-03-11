@@ -23,14 +23,10 @@ int index;
 LiquidCrystal lcd(7, 8, 9, 10, 11, 12);
 
 void setup() {
-  // DEBUGGING REMOVE LATER
-  Serial.begin(115200);
-  Serial.print("HELLOOOO");
+  Serial.begin(9600);
   
   // Set number of rows and columns in LCD.
   lcd.begin(16, 2);
-  lcd.setCursor(0, 0);
-  lcd.print("Hello");
   delay(1000);
 
   // Set the inital value of countdown.
@@ -60,7 +56,6 @@ void loop() {
     if (seconds <= 0) {
       seconds = 0;
       finished = true;
-      Serial.println("RED");
       digitalWrite(RED_LED, HIGH);
       digitalWrite(YELLOW_LED, LOW);
       digitalWrite(GREEN_LED, LOW);
@@ -76,7 +71,6 @@ void loop() {
       digitalWrite(RED_LED, LOW);
       digitalWrite(YELLOW_LED, HIGH);
       digitalWrite(GREEN_LED, LOW);
-      Serial.println("YELLOW");
     }
     
   } else {
@@ -95,7 +89,6 @@ void loop() {
       digitalWrite(RED_LED, LOW);
       digitalWrite(YELLOW_LED, LOW);
       digitalWrite(GREEN_LED, HIGH);
-      Serial.println("GREEN");
     }
   }
   
