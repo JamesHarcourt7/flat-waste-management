@@ -18,13 +18,15 @@ bool finished;
 
 // Define the array that decides who's turn it is to go (order generated randomly beforehand).
 String bin_takers[10] = {"James W", "Immy", "Mya", "James H", "Louis", "Liv", "Carl", "Lucy", "Sam", "Anna"};
+// Save current index in EEPROM, to avoid someone resetting it by mistake (or on purpose).
+int check_addr = 0;
+int check_val = 69;
 int index;
+int index_addr = 1;
 
 LiquidCrystal lcd(7, 8, 9, 10, 11, 12);
 
 void setup() {
-  Serial.begin(9600);
-  
   // Set number of rows and columns in LCD.
   lcd.begin(16, 2);
   delay(1000);
@@ -42,16 +44,24 @@ void setup() {
   pinMode(BUTTON_PIN, INPUT_PULLUP);
 
   // Get the index from EEPROM if its there, otherwise make it again.
-  // REMEMBER TO ADD THAT BTW I KNOW YOUR BEING LAZY RN.
-  index = 0;
-  
+  if (EEPROM.read(check_addr) == check_val) {
+    index = EEPROM.read(index_addr);
+  } else {
+    // Initially set index as 0, and write this to EEPROM. Set check value as well.
+    index = 0;
+    EEPROM.write(check_addr, check_val);
+    EEPROM.write(index_addr, 0);
+  }
+  delay(1000);
 }
 
 void loop() {
   if (!finished) {
     // Decrement the timer.
     seconds -= 1;
-    Serial.println(seconds);
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Countdown: " + seconds);
 
     if (seconds <= 0) {
       seconds = 0;
@@ -82,6 +92,8 @@ void loop() {
     // If the timer has finished, check for button press to reset.
     if (digitalRead(BUTTON_PIN) == LOW) {
       index ++;
+      // Update the value of index in EEPROM, in case of power down.
+      EEPROM.write(index_addr, index);
       seconds = total_seconds - seconds_over;
       seconds_over = 0;
       finished = false;
