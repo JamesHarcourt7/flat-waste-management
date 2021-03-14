@@ -89,10 +89,13 @@ void loop() {
       quarters = seconds / 900;
       EEPROM.write(time_addr, quarters);
     }
-    
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("Countdown: " + seconds);
+
+    // Display current time and previous person displayed when button is pressed.
+    if (digitalRead(BUTTON_PIN) == LOW) {
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print("Countdown: " + seconds);
+    }
 
     if (seconds <= 0) {
       seconds = 0;
@@ -123,6 +126,7 @@ void loop() {
     // If the timer has finished, check for button press to reset.
     if (digitalRead(BUTTON_PIN) == LOW) {
       index ++;
+      if (index == 10) index = 0;
       // Update the value of index in EEPROM, in case of power down.
       EEPROM.write(index_addr, index);
       seconds = total_seconds - seconds_over;
